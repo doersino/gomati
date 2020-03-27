@@ -357,6 +357,12 @@ montage                          \
    $FILES                        \
    "$OUTFILE"
 
+# if an error has occurred during downloading or stitching (the rest of the
+# pipeline is unlikely to yield an error), the previous command will return a
+# nonzero exit code, which we'll store and return at the end of this script to
+# indicate failure
+EXIT=$?
+
 if $PRETTIFY; then
     status "Adjusting brightness, contrast and saturation..."
     mogrify                          \
@@ -392,3 +398,5 @@ TIME_END=$(date +%s)
 TIME_TOTAL=$((TIME_END-TIME_START))
 
 status "Done after $TIME_TOTAL seconds."
+
+exit $EXIT
