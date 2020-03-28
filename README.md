@@ -30,9 +30,9 @@ Probably. I haven't checked. But they haven't banned my IP for downloading tens 
 
 ### What's the maximum map size?
 
-The limiting factor is probably RAM during the stitching step: I've grabbed an 80-by-80 tile map (that's 6400 tiles for those of you keeping track at home) of my hometown, and ImageMagick ate about 12 GB of RAM while stitching them together into a 420M pixel image.
+The limiting factor is probably RAM during the stitching step: I've grabbed an 80-by-80 tile map (that's 6400 tiles for those of you keeping track at home) of my hometown, and ImageMagick ate about 12 GB of RAM while stitching them together into a 20480x20480, 420M pixel image.
 
-(The effectively-free Google Maps Static API [limits you](https://developers.google.com/maps/documentation/maps-static/dev-guide#Imagesizes) to 1280x128ß pixels unless you're grandfathered into a discontinued premium plan, as I've learned after building Gomati.)
+(The effectively-free Google Maps Static API [limits you](https://developers.google.com/maps/documentation/maps-static/dev-guide#Imagesizes) to 1280x1280 pixels unless you're grandfathered into a discontinued premium plan, as I've learned after building Gomati.)
 
 ### Why is this tool so slow?
 
