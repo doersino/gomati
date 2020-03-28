@@ -26,19 +26,25 @@ Gomati stands for **Go**ogle **Ma**ps **Ti**les and is apparently also a [river 
 
 ### Does this violate Google's terms of use?
 
-Probably. I haven't checked. But they haven't banned my IP for downloading tens of thousands of map tiles during development and testing, so you're probably good as long as you don't go crazy downloading a centimeter-scale map of your country?
+Probably. I haven't checked. But they haven't banned my IP for downloading tens of thousands of map tiles during development and testing, so you're probably good as long as you don't go crazy downloading a centimeter-scale map of your country.
 
 ### What's the maximum map size?
 
 The limiting factor is probably RAM during the stitching step: I've grabbed an 80-by-80 tile map (that's 6400 tiles for those of you keeping track at home) of my hometown, and ImageMagick ate about 12 GB of RAM while stitching them together into a 420M pixel image.
 
+(The effectively-free Google Maps Static API [limits you](https://developers.google.com/maps/documentation/maps-static/dev-guide#Imagesizes) to 1280x128ß pixels unless you're grandfathered into a discontinued premium plan, as I've learned after building Gomati.)
+
 ### Why is this tool so slow?
 
-As it's a shell script, there's zero multithreading and a whole bunch of context-switching overhead, plus I made a real fancy progress indicator that's updated in a tight loop. I should have implemented this in Python – and I would've, if only I had anticipated the amount of feature creep I ended up sneaking in.
+Since it's a shell script, there's zero multithreading and a whole bunch of context-switching overhead, plus I made a real fancy progress indicator that's updated in a tight loop (i.e. a lot of string manipulation happens frequently). I should have implemented this in Python – and I would've, if only I had anticipated the amount of feature creep I ended up sneaking in.
 
-(The slowness isn't an issue if you use Gomati as I indend to use it: occasionally grabbing a 100ish tile map.)
+(The slowness isn't an issue if you use Gomati as I indend to use it: occasionally grabbing a 100ish tile map. Think of at as, uh, a totally intentional rate-limiting feature.)
 
-### This thing only does satellite images, I want my money back!
+### How do you determine tile coordinates based on latitude and longitude?
+
+By plugging them into the surprisingly simple [Web Mercator Projection](https://en.wikipedia.org/wiki/Web_Mercator_projection) formulas.
+
+### This thing only does satellite images, not road maps – I want my money back!
 
 Not a question, but sure: 💵
 
