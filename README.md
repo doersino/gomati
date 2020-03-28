@@ -24,6 +24,10 @@ A more detailed **list of requirements and usage/configuration instructions**, a
 
 Gomati stands for **Go**ogle **Ma**ps **Ti**les and is apparently also a [river in India](https://en.wikipedia.org/wiki/Gomti_River).
 
+### Why did you make this tool?
+
+Because satellite imagery [can be extremely beautiful](https://earthview.withgoogle.com), and I was looking for a way of easily downloading high-resolution satellite views of arbitrary locations such as [the center pivot irrigation farms of the American heartland](http://www.thegreatamericangrid.com/archives/1441).
+
 ### Does this violate Google's terms of use?
 
 Probably. I haven't checked. But they haven't banned my IP for downloading tens of thousands of map tiles during development and testing, so you're probably good as long as you don't go crazy downloading a centimeter-scale map of your country.
