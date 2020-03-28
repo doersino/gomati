@@ -259,7 +259,9 @@ if [[ ! "$LONGITUDE" =~ ^-?[0-9.]+$ ]]; then
     LONGITUDE="$(random_real_from_range "$LONGITUDE")"
 fi
 
-# compute tile corresponding to LAITUDE and LONGITUDE at selected ZOOM level
+# compute tile corresponding to LAITUDE and LONGITUDE at selected ZOOM level by
+# applying the web mercator projection formulas, see
+# https://en.wikipedia.org/wiki/Web_Mercator_projection
 PI="3.14159265358979"
 FACTOR="(256/(2*$PI))*(2^($ZOOM-8))"
 XFORMULA="$FACTOR*(($LONGITUDE*($PI/180))+$PI)"
@@ -276,9 +278,9 @@ XEND=$(echo "x = $XMID+($WIDTH/2); scale = 0; x / 1" | bc -l)
 YEND=$(echo "y = $YMID+($HEIGHT/2); scale = 0; y / 1" | bc -l)
 
 # set output paths
-TILEDIR="./tiles"
+TILEDIR="./gomati-tiles"
 if [ -z "$OUTFILE" ]; then
-    OUTFILE="montage-lat${LATITUDE}lon${LONGITUDE}-zoom${ZOOM}x${XSTART}+${WIDTH}y${YSTART}+${HEIGHT}.jpg"
+    OUTFILE="gomati-lat${LATITUDE}lon${LONGITUDE}-zoom${ZOOM}x${XSTART}+${WIDTH}y${YSTART}+${HEIGHT}.jpg"
 fi
 
 # faux user agent (google throws an error if it detects that we're using curl)
