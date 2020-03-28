@@ -30,7 +30,11 @@ Because satellite imagery [can be extremely beautiful](https://earthview.withgoo
 
 ### Does this violate Google's terms of use?
 
-Probably. I haven't checked. But they haven't banned my IP for downloading tens of thousands of map tiles during development and testing, so you're probably good as long as you don't go crazy downloading a centimeter-scale map of your country.
+Probably. I haven't checked. But they haven't banned my IP for downloading tens of thousands of map tiles during development and testing, so you're probably good as long as you don't go overboard downloading a centimeter-scale map of your country.
+
+### Morally speaking, how bad is it to violate Google's terms of use assuming I don't go overboard?
+
+I'm not an ethicist, but consider this: Google is a stupendously profitable company that earns the bulk of its income via folks like you just going about their days surfing the ad-filled web.
 
 ### What's the maximum map size?
 
