@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Google Maps Tile Downloader
+# Google Maps Tile Downloader & Stitcher
 # https://github.com/doersino/gomati
 # MIT License
 #
@@ -9,7 +9,7 @@
 #
 # Requirements: - bash (duh)
 #               - bc (for various calculations)
-#               - awk (for random number generation)
+#               - awk (doesn't need to be GNU awk; for random number generation)
 #               - curl (for downloading tiles)
 #               - imagemagick (for stitching 'em together)
 #
@@ -25,31 +25,31 @@
 # Note 2: The ZOOM variable relates to the way map tiles are subdivided when
 # zooming in – for Zoom level 0, there exists a single 256x256px tile that shows
 # the entire world. Zoom level 1 subdivides this tile into four quadrants which
-# are again 256x256px large and this higher-resolution. Further zoom levels
+# are again 256x256px large and thus of a higher resolution. Further zoom levels
 # subdivide the previous zoom level's tiles analogously. Note that a tile covers
-# an area that's ~40000000/2^ZOOM meters on each side (the earth's circumference
-# is roughly 40,000,000 meters). As a result, I find zoom factors 10 (where
-# tiles cover ~40 km) to 16 (~600 m) to be most useful. For more detail, see:
-# https://developers.google.com/maps/documentation/javascript/coordinates
+# a square area that's ~40000000/2^ZOOM meters on each side (the earth's
+# circumference is roughly 40,000,000 meters). As a result, I find zoom factors
+# 10 (where tiles cover ~40 km) to 16 (~600 m) to be most useful. For details,
+# see: https://developers.google.com/maps/documentation/javascript/coordinates
 #
 # Note 3: If WIDTH and HEIGHT are both set to 1, the script will download the
 # map tile at the configured ZOOM level that contains the configured coordinate
 # pair. Otherwise, WIDTH horizontal (longitudinal) and HEIGHT vertical
-# (latitudinal) tiles around that tile will be downloaded and stitched together
-# into an image (meaning that increasing WIDTH and HEIGHT zooms the image out
-# even if you keep ZOOM constant). Note that your coordinate pair is not
-# necessarily smack in the middle of the result image since it might lie towards
-# one corner of the central tile – this shortcoming is a compromise between 1.
-# requiring you to specify tile coordinates (instead of lat/lon) at the selected
-# zoom level or 2. letting this script spiral into a full-fledged mapping engine
-# (I pen-and-paper developed into this direction, but didn't feel like spending
-# the time implementing and debugging it, especially not in bash).
+# (latitudinal) tiles centered around that tile will be downloaded and stitched
+# together into an image (meaning that increasing WIDTH and HEIGHT zooms the
+# view out even if you keep ZOOM constant). Note that your coordinate pair is
+# not necessarily smack in the middle of the result image since it might lie
+# towards one corner of the central tile – this shortcoming is a compromise
+# between 1. requiring you to specify tile coordinates (instead of lat/lon) at
+# the selected zoom level or 2. letting this script spiral into a full-fledged
+# mapping engine (I pen-and-paper developed into this direction, but didn't feel
+# like spending the time implementing and debugging it, especially not in bash).
 #
 # Note 5: You can supply ranges for LATITUDE and LONGITUDE, e.g. 40_50 (the
 # separator is "_" and not "-" as this would clash with negative latitudes and
 # longitudes). A random real number from this range is then selected. In
 # combination with "while true; do bash gomati.sh; done", this can be used to
-# create random maps.
+# create a virtually endless number of maps of random places.
 # Similarly, if you set "ZOOM=$1", you can generate a series of successively-
 # higher-zoom images via `for i in $(seq 0 20); do bash gomati.sh $i; done`.
 #
@@ -70,8 +70,8 @@
 # -v flag to find out more) and gray ones are yet to be downloaded.
 #
 # Fun fact: Building the progress indiciator was the most complicated part of
-# this work. I almost rewrote this script in Python to have an easier time with
-# that!
+# this work, and I'm sure it's not elegantly done at all. I almost rewrote this
+# script in Python to have an easier time with that!
 #
 # Examples: | LAT    | LON     | ZOOM | WIDTH | HEIGHT | Description           |
 #           | ------ | ------- | ---- | ----- | ------ | ----------------------|
@@ -105,7 +105,7 @@ HEIGHT=5  # ⎦ in tiles
 #CONFIG=(47.97_29.97 -106.44_-90.93 15 7 7)   # same, about 4 miles, higher-res
 #CONFIG=(47.97_29.97 -106.44_-90.93 17 7 7)   # same, about 1 mile (tweets at
                                               # @americasquared)
-#CONFIG=(48.51847 9.05814 18 80 80)           # massive map of tübingen (412M
+#CONFIG=(48.51847 9.05814 18 80 80)           # massive map of tübingen (420M
                                               # pxiels, imagemagick eats ~12G of
                                               # RAM during stitching, so be
                                               # careful)
@@ -175,7 +175,8 @@ function p_print {
     else
         printf "$P_TMP"
 
-        # if first arg set, print spaces instead of percentage
+        # if first arg set, print spaces instead of percentage in order to
+        # overwrite a previously printed percentage
         printf %-${#P_NUMBERS}s " "
         printf "\r"
     fi
@@ -214,11 +215,11 @@ function progress {
 function random_real_from_range {
     RANGE="$1"
 
-    # split range on -
+    # split range on _
     IFS='_' read -ra RANGEARR <<< "$RANGE"
 
     # read lower and upper bound into variables (order actually doesn't matter
-    # because of the math further down, very convenient)
+    # because of the math further down, which is very convenient)
     LOWER="${RANGEARR[0]}"
     UPPER="${RANGEARR[1]}"
 
@@ -286,8 +287,7 @@ fi
 # faux user agent (google throws an error if it detects that we're using curl)
 UA="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59"
 
-################################################################################
-
+# output of configuration for sanity check purposes
 $VERBOSE && cat << EOF
 LATITUDE $LATITUDE
 LONGITUDE $LONGITUDE
@@ -303,13 +303,16 @@ XEND $XEND
 YEND $YEND
 EOF
 
-mkdir -p "$TILEDIR"
-cd "$TILEDIR"
+################################################################################
 
 status "Downloading map tiles..."
 
+# prepare file system
+mkdir -p "$TILEDIR"
+cd "$TILEDIR"
+
 # list of "done" files – the order is important (ordered by y (column) first, x
-# (row) last), it'll later be used for stitching
+# (row) last), it'll later be used for stitching)
 FILES=""
 
 # note the if these loops are reversed, the result ends up transposed and
@@ -351,6 +354,8 @@ for Y in $(seq $YSTART $YEND); do
     progress $P_NEWLINE
 done
 
+################################################################################
+
 status "Stitching 'em together..."
 montage                          \
   $($VERBOSE && echo "-monitor") \
@@ -360,9 +365,9 @@ montage                          \
    "$OUTFILE"
 
 # if an error has occurred during downloading or stitching (the rest of the
-# pipeline is unlikely to yield an error), the previous command will return a
-# nonzero exit code, which we'll store and return at the end of this script to
-# indicate failure
+# pipeline is unlikely to yield an error), the previous command will have
+# returned a nonzero exit code, which we'll store and return at the end of this
+# script to indicate failure
 EXIT=$?
 
 if $PRETTIFY; then
@@ -391,6 +396,8 @@ if [ ! $RESIZE = false ]; then
       -resize $RESIZE                \
       "$OUTFILE"
 fi
+
+################################################################################
 
 cd - >/dev/null
 cp "$TILEDIR/$OUTFILE" .
