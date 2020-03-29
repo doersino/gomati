@@ -168,7 +168,7 @@ function p_print {
     P_TMP="${P_TMP//N/${RED}▓${NORMAL}}"
 
     P_TOTAL=$((WIDTH*HEIGHT))
-    P_PERCENT="$(printf '%5.2f' $(echo "100*$P_COUNT/$P_TOTAL" | bc -l))"
+    P_PERCENT="$(LC_NUMERIC=C printf '%5.2f' $(echo "100*$P_COUNT/$P_TOTAL" | bc -l))"
     P_NUMBERS="$P_PERCENT%% ($P_COUNT/$P_TOTAL)"
     if [ -z "$1" ]; then
         printf "$P_TMP $P_NUMBERS\r"
