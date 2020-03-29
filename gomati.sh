@@ -284,6 +284,9 @@ if [ -z "$OUTFILE" ]; then
     OUTFILE="gomati-lat${LATITUDE}lon${LONGITUDE}-zoom${ZOOM}x${XSTART}+${WIDTH}y${YSTART}+${HEIGHT}.jpg"
 fi
 
+# pick mirror
+MIRROR=$((RANDOM % 4))
+
 # faux user agent (google throws an error if it detects that we're using curl)
 UA="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59"
 
@@ -332,7 +335,7 @@ for Y in $(seq $YSTART $YEND); do
               -f                       \
               --user-agent "$UA"       \
               -o "$FILENAME"           \
-              "https://khms2.google.com/kh/v=865?x=${X}&y=${Y}&z=${ZOOM}"
+              "https://khms${MIRROR}.google.com/kh/v=865?x=${X}&y=${Y}&z=${ZOOM}"
 
             RETURN=$?
             if [ $RETURN -eq 0 ]; then
