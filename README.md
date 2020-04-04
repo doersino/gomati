@@ -48,6 +48,8 @@ Since it's a shell script, there's zero multithreading and a whole bunch of cont
 
 (The slowness isn't an issue if you use Gomati as I indend to use it: occasionally grabbing a 100ish tile map, which takes fewer than 30 seconds. Think of at as, uh, a totally intentional rate-limiting feature.)
 
+**Note: I've since reimplemented (and significantly extended) this tool in Python – meet [ærialbot](http://github.com/doersino/aerialbot).**
+
 ### How do you determine tile coordinates based on latitude and longitude?
 
 By plugging them into the surprisingly simple [Web Mercator Projection](https://en.wikipedia.org/wiki/Web_Mercator_projection) formulas.
