@@ -92,7 +92,9 @@
 LATITUDE=48.52  # ⎤ latitude and longitude of central tile of desired map
 LONGITUDE=9.06  # ⎦ in °
 
-ZOOM=13  # tile zoom level (0-20, larger level -> things look bigger)
+ZOOM=13  # tile zoom level (0-23, larger level -> things look bigger, note that
+         # the maximum zoom level available at your selected location is
+         # unlikely to be higher than 21)
 
 WIDTH=5   # ⎤ dimensions of desired map
 HEIGHT=5  # ⎦ in tiles
