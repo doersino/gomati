@@ -54,6 +54,10 @@ Since it's a shell script, there's zero multithreading and a whole bunch of cont
 
 By plugging them into the surprisingly simple [Web Mercator Projection](https://en.wikipedia.org/wiki/Web_Mercator_projection) formulas.
 
+### How can I figure out which zoom levels are available for my location?
+
+Either by trial and error (will always work) or via [this page](https://developers.google.com/maps/documentation/javascript/examples/maxzoom-simple) (will work until Google significantly changes their documentation).
+
 ### This thing only does satellite images, not road maps – I want my money back!
 
 Not a question, but sure: 💵
