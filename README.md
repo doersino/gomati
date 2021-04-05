@@ -2,6 +2,8 @@
 
 *A simple Google Maps tile downloader and stitcher.*
 
+**Note: I've reimplemented (and significantly extended) this tool in Python – meet [ærialbot](http://github.com/doersino/aerialbot). Despite having been designed to power a set of Twitter bots, if you configure it to download an area around a fixed point and leave the Twitter API credentials blank, it's essentially equivalent to this tool. Notably, as it uses a threadpool for tile downloading, it's *significantly* faster than this tool.**
+
 
 ## Setup & Usage
 
@@ -47,8 +49,6 @@ The limiting factor is probably RAM during the stitching step: I've grabbed an 8
 Since it's a shell script, there's zero multithreading and a whole bunch of context-switching overhead, plus I made a real fancy progress indicator that's updated in a tight loop (i.e. a lot of string manipulation happens frequently). I should have implemented this in Python – and I would've, if only I had anticipated the amount of feature creep I ended up sneaking in.
 
 (The slowness isn't an issue if you use Gomati as I indend to use it: occasionally grabbing a 100ish tile map, which takes fewer than 30 seconds. Think of at as, uh, a totally intentional rate-limiting feature.)
-
-**Note: I've since reimplemented (and significantly extended) this tool in Python – meet [ærialbot](http://github.com/doersino/aerialbot).**
 
 ### How do you determine tile coordinates based on latitude and longitude?
 
